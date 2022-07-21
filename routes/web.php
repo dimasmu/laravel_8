@@ -23,3 +23,5 @@ Route::get('/open-movie',[MovieListController::class, 'openMovie'])->name('open_
 Route::post('/insert-movie',[MovieListController::class, 'insertMovie'])->name('insert_movie');
 Route::get('/update-movie/{id}',[MovieListController::class, 'updateMovie'])->name('update_movie');
 Route::get('/delete-movie/{id}',[MovieListController::class, 'deleteMovie'])->name('delete_movie');
+
+//MOVIE DETAIL ROUTE
