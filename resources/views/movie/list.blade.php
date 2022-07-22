@@ -4,8 +4,8 @@
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
-        .width-th{
-            width: 5%;
+        .table-res{
+            width: 100%
         }
     </style>
 </head>
@@ -19,19 +19,19 @@
                         <a onclick="routeAdd()" class="btn btn-success"><i class="fa-light fa-plus"></i> | Add Data</a>
                     </div>
                     <div class="row">
-                        <table class="table diplay nowrap table-responsive" id="movie">
+                        <table class="table diplay nowrap @if(count($data) > 0) table-responsive @endif" id="movie">
                             <thead>
                                 <tr>
                                     <th scope="col" class="width-th">No</th>
-                                    <th scope="col">title</th>
-                                    <th scope="col">category</th>
-                                    <th scope="col">release</th>
-                                    <th scope="col">aired form</th>
-                                    <th scope="col">aired to</th>
-                                    <th scope="col">duration</th>
-                                    <th scope="col">status</th>
-                                    <th scope="col">created at</th>
-                                    <th scope="col">updated at</th>
+                                    <th scope="col">Title</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Release</th>
+                                    <th scope="col">Aired form</th>
+                                    <th scope="col">Aired to</th>
+                                    <th scope="col">Duration</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Created at</th>
+                                    <th scope="col">Updated at</th>
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
@@ -43,7 +43,7 @@
                                     <td>
                                         @if ($row->category !== null)
                                         @foreach ($row->category as $index)
-                                        <span class="badge bg-primary">{{$index}}</span>
+                                            <span class="badge bg-primary">{{$index}}</span>
                                         @endforeach
                                         @endif
                                     </td>
@@ -56,8 +56,10 @@
                                     <td>{{$row->updated_at}}</td>
                                     <td>
                                         <button onClick="routeEdit({{$row->id}})" type="button"
-                                            class="btn btn-primary">Edit</button>
-                                        <button onClick="routeDelete({{$row->id}})" type="button" class="btn btn-danger">Delete</button>
+                                            class="btn btn-primary"><i class="fa-solid fa-pen-to-square me-2"></i>Edit</button>
+                                        <button onClick="routeDelete({{$row->id}})" type="button" class="btn btn-danger"><i class="fa-solid fa-trash me-2"></i>Delete</button>
+                                        <button onClick="routeDetail({{$row->id}})" type="button"
+                                            class="btn btn-info"><i class="fa-solid fa-file-zipper me-2"></i>Detail</button>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -75,10 +77,7 @@
 <script src="{{asset('js/dataTables.bootstrap5.min.js')}}"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        var table = $('#movie').DataTable({
-            "autoWidth": false,
-            "processing": true,
-        });
+        var table = $('#movie').DataTable();
 
         $('#loading').hide();
         $('#movie tbody').removeClass('d-none');
@@ -119,11 +118,28 @@
             },
             success: function (response) {
                 $(".content").html(response);
-                window.history.replaceState(null, null, "/open-movie/"+id);
+                // window.history.replaceState(null, null, "/update-movie/"+id);
             }
         });
         // location.href = '{{ url('/open-movie') }}';
     }
+
+    function routeDetail(id){
+        event.preventDefault();
+        const CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+        $.ajax({
+            type: "get",
+            url: "/detail-movie/"+id,
+            data: {
+                CSRF_TOKEN
+            },
+            success: function (response) {
+                $(".content").html(response);
+                // window.history.replaceState(null, null, "/detail-movie/"+id);
+            }
+        });
+    }
+
     function routeDelete(id){
         swal({
             title: 'Are you sure to delete?',

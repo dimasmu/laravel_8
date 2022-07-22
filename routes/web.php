@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DetailMovieController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MovieListController;
 /*
@@ -25,3 +26,6 @@ Route::get('/update-movie/{id}',[MovieListController::class, 'updateMovie'])->na
 Route::get('/delete-movie/{id}',[MovieListController::class, 'deleteMovie'])->name('delete_movie');
 
 //MOVIE DETAIL ROUTE
+Route::prefix('/detail-movie')->group(function(){
+    route::get('/{id}',[DetailMovieController::class, 'index'])->name('detail_movie.index');
+});

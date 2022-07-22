@@ -10,4 +10,14 @@ class detail_movie extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    protected $casts = [
+        'link' => 'array'
+    ];
+
+    protected $table = 'detail_movie';
+
+    public function getLink(){
+        return $this->hasMany(link_movie::class, 'detail_movie_id', 'id');
+    }
 }

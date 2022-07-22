@@ -2,22 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\detail_movie;
-use App\Repository\DetailMovieRepositry;
+use App\Repositories\DetailMovieRepository;
 use Illuminate\Http\Request;
 
 class DetailMovieController extends Controller
 {
-    private $DetailMovie;
+    private $DetailMovieRepository;
 
-    public function __construct(DetailMovieRepositry $DetailMovieRepository)
+    public function __construct(DetailMovieRepository $DetailMovieRepository)
     {
-        $this->DetailMovie = $DetailMovieRepository;
+        $this->DetailMovieRepository = $DetailMovieRepository;
     }
 
-    public function index()
+    public function index($id)
     {
-        $data = $this->DetailMovie->getAll();
-        return $data;
+        $data = $this->DetailMovieRepository->findOne($id);
+        return view('movie.detail',compact('data'));
     }
 }

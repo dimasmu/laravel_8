@@ -21,7 +21,8 @@ return new class extends Migration
             $table->timestamp('aired_from')->nullable()->default(null);
             $table->timestamp('aired_to')->nullable()->default(null);
             $table->integer('duration')->nullable()->default(null);
-            $table->boolean('status')->nullable()->default(null);
+            $table->integer('status')->nullable()->default(null);
+            $table->boolean('is_status')->nullable()->default(null);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });
