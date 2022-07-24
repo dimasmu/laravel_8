@@ -16,10 +16,21 @@ class DetailMovieController extends Controller
 
     public function index($id)
     {
-        $detail_movie_id = $id;
+        $movie_id = $id;
         $data = $this->DetailMovieRepository->findOne($id);
-        return view('movie.detail',compact('data','detail_movie_id'));
+        return view('movie.detail',compact('data','movie_id'));
     }
 
+    public function apiIndex(Request $request,$id)
+    {
+        $data = $this->DetailMovieRepository->findOneYajra($request,$id);
+        return $data;
+    }
+
+    public function insert(Request $request)
+    {
+        $data = $this->DetailMovieRepository->save($request);
+        return $data;
+    }
 
 }

@@ -86,6 +86,6 @@ class MovieListController extends Controller
     public function deleteMovie($id){
         $data = Movie::find($id);
         $data->delete();
-        return response()->json(['title'=>'Success', 'text'=>'Success delete movie data!'], 201);
+        return response()->json(['title'=>'Success', 'text'=>'Success delete movie data!'], 200);
     }
 }

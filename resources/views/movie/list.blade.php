@@ -19,7 +19,7 @@
                         <a onclick="routeAdd()" class="btn btn-success"><i class="fa-light fa-plus"></i> | Add Data</a>
                     </div>
                     <div class="row">
-                        <table class="table diplay nowrap @if(count($data) > 0) table-responsive @endif" id="movie">
+                        <table class="table diplay nowrap @if(count($data) > 0) table-responsive @endif" style=" overflow:auto;" id="movie">
                             <thead>
                                 <tr>
                                     <th scope="col" class="width-th">No</th>
