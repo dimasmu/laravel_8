@@ -20,9 +20,9 @@ return new class extends Migration
             ->references('id')->on('movie')
             ->onDelete('cascade');
             $table->integer('episode');
-            $table->integer('view')->nullable();
-            $table->integer('like')->nullable();
-            $table->integer('dislike')->nullable();
+            $table->integer('view')->nullable()->default(0);
+            $table->integer('like')->nullable()->default(0);
+            $table->integer('dislike')->nullable()->default(0);
             $table->timestamps();
         });
     }

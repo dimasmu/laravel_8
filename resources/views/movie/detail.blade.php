@@ -13,7 +13,7 @@
             <div class="card flex-fill w-100">
                 <div class="card-header" style="background-color: white;">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-4" role="group" aria-label="Add">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" id="add-btn"
                             data-bs-target="#add_modal"><i class="fa-solid fa-plus me-2"></i>
                             Add data
                         </button>
@@ -32,10 +32,10 @@
                                     <th scope="col">dislike</th>
                                     <th scope="col">created at</th>
                                     <th scope="col">updated at</th>
-                                    {{-- <th scope="col">Action</th> --}}
+                                    <th scope="col">Action</th>
                                 </tr>
                             </thead>
-                            <tbody class="table-group-divider d-none"></tbody>
+                            <tbody class="table-group-divider"></tbody>
                         </table>
                         @include('layouts.loading')
                     </div>
@@ -45,27 +45,27 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="addModal">Add Link</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
                                 </div>
                                 <form class="modal-body" id="inner_modal">
-                                    <div class="mb-3 col-md-12 col-xs-12 col-sm-12">
+                                    <div class="mb-3 col-md-12 col-xs-12 col-sm-12 d-none">
                                         <label for="movie_id" class="form-label">movie id</label>
-                                        <div class="skeleton skeleton-text skeleton-text__body"></div>
-                                        <input type="text" name="movieId" class="form-control d-none" id="movie_id"
+                                        <input type="text" name="movieId" class="form-control" id="movie_id"
                                             value="{{$movie_id}}">
+                                    </div>
+                                    <div class="mb-3 col-md-12 col-xs-12 col-sm-12 d-none">
+                                        <label for="link_id" class="form-label">Link id</label>
+                                        <input type="text" name="lnkId" class="form-control" id="link_id"
+                                            value="">
                                     </div>
                                     <div class="mb-3 col-md-12 col-xs-12 col-sm-12">
                                         <label for="episode" class="form-label">episode</label>
-                                        <div class="skeleton skeleton-text skeleton-text__body"></div>
-                                        <input type="text" name="episode" class="form-control d-none" id="id_episode"
+                                        <input type="text" name="episode" class="form-control" id="id_episode"
                                             value="{!! !empty($data->episode) ? $data->episode : null !!}">
                                     </div>
                                     <div class="row col-md-12 col-xs-12 col-sm-12 link_input_field">
                                         <div class="col-md-10 col-xs-10 col-sm-10">
                                             <label for="title" class="form-label">Link 1</label>
-                                            <div class="skeleton skeleton-text skeleton-text__body"></div>
-                                            <input type="text" name="link" class="form-control d-none" id="link_1"
+                                            <input type="text" name="link" class="form-control" id="link_1"
                                                 value="">
                                         </div>
                                         <div class="col-md-2 col-xs-2 col-sm-2">
@@ -75,7 +75,7 @@
                                     </div>
                                 </form>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary"
+                                    <button type="button" class="btn btn-secondary" id="dissmis-btn"
                                         data-bs-dismiss="modal">Close</button>
                                     <button type="button" id="submit_button" class="btn btn-primary">Submit</button>
                                 </div>
@@ -90,24 +90,16 @@
 <script src="{{asset('js/jquery.dataTables.min.js')}}"></script>
 <script src="{{asset('js/dataTables.bootstrap5.min.js')}}"></script>
 <script type="text/javascript">
+    var table = null;
     $(document).ready(function () {
-        console.log("tes");
         let movieId = {!! isset($movie_id) ? json_encode($movie_id) : 'false' !!};
         let urlReplace = "{{ route('api.detail_movie_index',[':id'])}}".replace(':id', movieId);
-        var table = $('#detail_movie').DataTable({
+        table = $('#detail_movie').DataTable({
             processing: true,
             serverSide: true,
+            scrollX: true,
+            scrollCollapse: true,
             ajax: urlReplace,
-            // columns: [
-            //     {data: 'no', name: 'no'},
-            //     {data: 'episode', name: 'episode'},
-            //     {data: 'view', name: 'view'},
-            //     {data: 'like', name: 'like'},
-            //     {data: 'dislike', name: 'dislike'},
-            //     {data: 'created_at', name: 'created_at'},
-            //     {data: 'updated_at', name: 'updated_at'}
-            //     // {data: 'action', name: 'action', orderable: false, searchable: false},
-            // ]
             columnDefs: [
                 {
                     "data" : 'no',
@@ -119,7 +111,6 @@
                 },
                 {
                     "render": function ( data, type, full, meta ) {
-                        console.log("tessss");
                         let createHtml = '';
                         var divArea = document.createElement('textarea');
                         divArea.innerHTML = full.link_html;
@@ -149,20 +140,25 @@
                     "data" : 'updated_at',
                     "target" : [7]
                 },
+                {
+                    "render": function ( data, type, full, meta ) {
+                        let createHtml = '';
+                        var divArea = document.createElement('textarea');
+                        divArea.innerHTML = full.action;
+                        createHtml+=divArea.value;
+                        return createHtml;
+                    },
+                    "data" : null,
+                    "target" : [8]
+                },
             ],
         });
 
         $('#loading').hide();
-        $('.skeleton').hide();
-        $("input[name='link']").removeClass("d-none");
-        $("input[name='episode']").removeClass("d-none");
-        $("input[name='movieId']").removeClass("d-none");
-        $('#detail_movie tbody').removeClass('d-none');
-
         $("#add_link_btn").click(function (){
-            const getCount = $(`#inner_modal .link_input_field`).length + 1;
+            const getCount = $(`#inner_modal .link_input_field_clone`).length + 2;
             $("#inner_modal").append(`
-                <div class="row col-md-12 col-xs-12 col-sm-12 link_input_field">
+                <div class="row col-md-12 col-xs-12 col-sm-12 link_input_field_clone">
                     <div class="col-md-10 col-xs-10 col-sm-10">
                         <label for="title" class="form-label">Link ${getCount}</label>
                         <input type="text" name="link_${getCount}" class="form-control"
@@ -177,7 +173,21 @@
         });
 
         $('#add_modal').on('click', '.delete_link_btn', function() {
-            $(this).closest('.link_input_field').remove();
+            $(this).closest('.link_input_field_clone').remove();
+        })
+
+        $('#add-btn').click(function() {
+            console.log("add modal");
+            $('#id_episode').val('');
+            $('#link_1').val('');
+            $('#link_id').val('');
+        })
+
+        $('#dissmis-btn').click(function() {
+            // $('video').get(0).play();
+            // $('video').get(0).pause();
+            $('#add_modal').modal('hide');
+            $(this).parent().parent().find('.link_input_field_clone').remove()
         })
 
         $("#submit_button").click(function() {
@@ -234,6 +244,97 @@
         })
     });
 
+    function routeDeleteDetail(id){
+        swal({
+            title: 'Are you sure to delete?',
+            showCancelButton: true,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true
+        })
+        .then((next) => {
+            if (next) {
+                // let urlReplace = "{{ route('detail_movie.delete',[':id'])}}".replace(':id', id);
+                $.ajax({
+                    url: "/detail-movie/"+id,
+                    type: "DELETE",
+                    data : {
+                        _token : $('meta[name="csrf-token"]').attr('content')
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        swal({
+                            title: data.title,
+                            text: data.text,
+                            icon: "success",
+                            buttons: false,
+                            timer: 800
+                        }).then( function () {
+                            table.ajax.reload();
+                        })
+                    },
+                    error: function (data) {
+                        swal({
+                            title: "Error Delete!",
+                            text: data.responseJSON.message,
+                            icon: "error"
+                        });
+                        console.log('Error:', data);
+                    }
+                });
+            } else {
 
+            }
+        })
+    }
+
+    function routeEditDetail(id){
+        let urlReplace = "{{ route('api.detail_id',[':id'])}}".replace(':id', id);
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: id,
+            url: urlReplace,
+            type: "GET",
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                let link = data.get_link;
+                $("#add_modal").modal("show");
+                $("#link_id").val(id);
+                $("#id_episode").val(data.episode);
+                link.map((element,index) => {
+                    if(index === 0){
+                        $("#link_1").val(element.link);
+                    }else {
+                        const getCount = $(`#inner_modal .link_input_field_clone`).length + 2;
+                        $("#inner_modal").append(`
+                            <div class="row col-md-12 col-xs-12 col-sm-12 link_input_field_clone">
+                                <div class="col-md-10 col-xs-10 col-sm-10">
+                                    <label for="title" class="form-label">Link ${getCount}</label>
+                                    <input type="text" name="link_${getCount}" class="form-control"
+                                        value="">
+                                </div>
+                                <div class="col-md-2 col-xs-2 col-sm-2">
+                                    <button type="button" class="btn btn-danger btn-floating delete_link_btn"
+                                        style="margin-top: 2.07rem"><i class="fa-solid fa-minus"></i></button>
+                                </div>
+                            </div>
+                        `)
+                        $(`input[name='link_${getCount}']`).val(element.link);
+                    }
+                })
+            },
+            error: function (data) {
+                swal({
+                    title: "Error Insert!",
+                    text: data.responseJSON.message,
+                    icon: "error"
+                });
+                console.log('Error:', data);
+            }
+        });
+    }
 
 </script>

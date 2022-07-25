@@ -27,10 +27,21 @@ class DetailMovieController extends Controller
         return $data;
     }
 
+    public function findOne($id)
+    {
+        $data = $this->DetailMovieRepository->findOneDetail($id);
+        return $data;
+    }
+
     public function insert(Request $request)
     {
         $data = $this->DetailMovieRepository->save($request);
         return $data;
     }
 
+    public function delete($id)
+    {
+        $data = $this->DetailMovieRepository->delete($id);
+        return $data;
+    }
 }

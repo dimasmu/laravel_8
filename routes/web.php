@@ -29,4 +29,5 @@ Route::get('/delete-movie/{id}',[MovieListController::class, 'deleteMovie'])->na
 Route::prefix('/detail-movie')->group(function(){
     route::get('/{id}',[DetailMovieController::class, 'index'])->name('detail_movie.index');
     route::post('/',[DetailMovieController::class, 'insert'])->name('detail_movie.save');
+    route::delete('/{id}',[DetailMovieController::class, 'delete'])->name('detail_movie.delete');
 });

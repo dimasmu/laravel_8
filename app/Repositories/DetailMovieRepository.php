@@ -8,6 +8,7 @@ use Datatables;
 use App\Models\detail_movie;
 use App\Models\link_movie;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DetailMovieRepository{
     public function findOne($id)
@@ -32,6 +33,12 @@ class DetailMovieRepository{
             ];
             return $array;
         });
+        return $data;
+    }
+
+    public function findOneDetail($id)
+    {
+        $data = detail_movie::with('getLink')->get()->find($id);
         return $data;
     }
 
@@ -94,6 +101,17 @@ class DetailMovieRepository{
             }
             return htmlspecialchars_decode($btn);
         })
+        ->addColumn('action', function($row){
+            $btn = '
+            <td>
+                <a onClick="routeEditDetail('.$row['id'].')"
+                    class="btn btn-primary">Edit</a>
+                <a onClick="routeDeleteDetail('.$row['id'].')"
+                    class="btn btn-danger">Delete</a>
+            </td>
+            ';
+            return $btn;
+        })
         ->make(true);
       }
     }
@@ -102,25 +120,55 @@ class DetailMovieRepository{
     {
         $newDate = date("Y-m-d H:i:s");
         $validatedData = $request->validate([
-            'movieId' => 'required'
+            'movieId' => 'required',
+            'episode' => 'required'
         ]);
         $data = $request->all();
-        $newId = detail_movie::create([
-            'movie_id' => $request->input('movieId'),
-            'episode' => $request->input('episode'),
-            'created_at' => $newDate
-        ]);
-        $newArray = [];
-        foreach ($data as $key => $value) {
-            if(str_starts_with($key,"link")){
-                array_push($newArray,[
-                    'detail_movie_id' => $newId->id,
-                    'link' => $value,
-                    'created_at' => $newDate,
-                ]);
+        if($data['lnkId']){
+            $getDetailMovie = detail_movie::find($data['lnkId']);
+            $getDetailMovie->update([
+                'episode' => $request->input('episode'),
+                'updated_at' => $newDate
+            ]);
+            DB::table('link_movie')->where('detail_movie_id',$data['lnkId'])->delete();
+            $newArray = [];
+            foreach ($data as $key => $value) {
+                if(str_starts_with($key,"link")){
+                    array_push($newArray,[
+                        'detail_movie_id' => $data['lnkId'],
+                        'link' => $value,
+                        'created_at' => $newDate,
+                        'updated_at' => $newDate
+                    ]);
+                }
             }
+            link_movie::insert($newArray);
+            return response()->json(['title'=>'Success', 'text'=>'Success update detail movie data!'], 200);
+        } else {
+            $newId = detail_movie::create([
+                'movie_id' => $request->input('movieId'),
+                'episode' => $request->input('episode'),
+                'created_at' => $newDate
+            ]);
+            $newArray = [];
+            foreach ($data as $key => $value) {
+                if(str_starts_with($key,"link")){
+                    array_push($newArray,[
+                        'detail_movie_id' => $newId->id,
+                        'link' => $value,
+                        'created_at' => $newDate,
+                    ]);
+                }
+            }
+            link_movie::insert($newArray);
+            return response()->json(['title'=>'Success', 'text'=>'Success insert detail movie data!'], 201);
         }
-        link_movie::insert($newArray);
-        return response()->json(['title'=>'Success', 'text'=>'Success insert detail movie!'], 201);
+    }
+
+    public function delete($id)
+    {
+        $data = detail_movie::find($id);
+        $data->delete();
+        return response()->json(['title'=>'Success', 'text'=>'Success delete movie detail!'], 200);
     }
 }

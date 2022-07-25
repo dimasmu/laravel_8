@@ -21,3 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // API DETAIL MOVIE
 Route::get('/detail-movie/{id}',[DetailMovieController::class, 'apiIndex'])->name('api.detail_movie_index');
+Route::get('/detail-id/{id}',[DetailMovieController::class, 'findOne'])->name('api.detail_id');
