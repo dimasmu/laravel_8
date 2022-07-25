@@ -119,43 +119,14 @@
                 },
                 {
                     "render": function ( data, type, full, meta ) {
-                            let link = data;
-                            let createHtml = '';
-                            let getIdHTML = '';
-                            link.map((element,index) => {
-                                createHtml+=
-                                `
-                                <button type="button" class="btn btn-primary" data-mdb-toggle="modal"
-                                            data-mdb-target="#linkModal-${index+1}">
-                                            Show Link ${index+1}
-                                        </button>
-                                        <div class="modal fade" id="linkModal-${index+1}" tabindex="-1"
-                                            aria-labelledby="titlemodal-1" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered" style="max-width: 100%;width: auto !important;display: table;">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="titlemodal-${index+1}">Link ${index+1}</h5>
-                                                        <button type="button" class="btn-close" data-mdb-dismiss="modal"
-                                                            aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body" id="modalbody-${index+1}">
-
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary"
-                                                            data-mdb-dismiss="modal">Close</button>
-                                                        {{-- <button type="button" class="btn btn-primary">Save
-                                                            changes</button> --}}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                `
-                                // getIdHTML = createHtml.find(`#modalbody-${index+1}`).append(`${element.link}`);
-                            });
-                            return createHtml;
+                        console.log("tessss");
+                        let createHtml = '';
+                        var divArea = document.createElement('textarea');
+                        divArea.innerHTML = full.link_html;
+                        createHtml+=divArea.value;
+                        return createHtml;
                     },
-                    "data" : 'link',
+                    "data" : null,
                     "target" : [2]
                 },
                 {

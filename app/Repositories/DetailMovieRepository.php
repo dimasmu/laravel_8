@@ -48,13 +48,12 @@ class DetailMovieRepository{
                 'id' => $data->id,
                 'movie_id' => $data->movie_id,
                 'episode' => $data->episode,
-                'link' => html_entity_decode($data->link),
+                'link' => $data->getLink,
                 'view' => $data->view,
                 'like' => $data->like,
                 'dislike' => $data->dislike,
                 'created_at' => Carbon::parse($data->created_at)->format('d M Y'),
                 'updated_at' => Carbon::parse($data->updated_at)->format('d M Y'),
-                'link' => $data->getLink
 
             ];
             return $array;
@@ -62,9 +61,38 @@ class DetailMovieRepository{
 
         return Datatables()->of($data)
         ->addIndexColumn()
-        ->addColumn('link_aja', function($row){
-            $btn = '<a href="javascript:void(0)" class="btn btn-primary btn-sm">View</a>';
-            return $btn;
+        ->addColumn('link_html', function($row){
+            $data = $row['link']->toArray();
+            $btn = '';
+            foreach ($data as $key => $value) {
+                $getIndex = $key+1;
+                $btn .='
+                    <button type="button" class="btn btn-primary" data-mdb-toggle="modal"
+                        data-mdb-target="#linkModal-'.$value['detail_movie_id'].'-'.$getIndex.'">
+                        Show Link '.$getIndex.'
+                    </button>
+                    <div class="modal fade" id="linkModal-'.$value['detail_movie_id'].'-'.$getIndex.'" tabindex="-1"
+                        aria-labelledby="titlemodal-'.$value['detail_movie_id'].'-'.$getIndex.'" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" style="max-width: 100%;width: auto !important;display: table;">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="titlemodal-'.$value['detail_movie_id'].'-'.$getIndex.'">Link '.$getIndex.'</h5>
+                                    <button type="button" class="btn-close" data-mdb-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body" id="modalbody-'.$value['detail_movie_id'].'-'.$getIndex.'">
+                                    '.$value['link'].'
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-mdb-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ';
+            }
+            return htmlspecialchars_decode($btn);
         })
         ->make(true);
       }
