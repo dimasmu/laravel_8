@@ -18,7 +18,11 @@ return new class extends Migration
             $table->unsignedBigInteger('detail_movie_id');
             $table->foreign('detail_movie_id')->references('id')->on('detail_movie')
             ->onDelete('cascade');
+            $table->string('embed')->nullable();
             $table->string('link')->nullable();
+            $table->integer('resolution')->nullable();
+            $table->integer('created_by')->nullable()->default(0);
+            $table->integer('updated_by')->nullable()->default(0);
             $table->timestamps();
         });
     }

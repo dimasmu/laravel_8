@@ -9,6 +9,7 @@ use App\Models\detail_movie;
 use App\Models\link_movie;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Stmt\TryCatch;
 
 class DetailMovieRepository{
     public function findOne($id)
@@ -73,22 +74,25 @@ class DetailMovieRepository{
             $btn = '';
             foreach ($data as $key => $value) {
                 $getIndex = $key+1;
+                $valueLink = $value['link'] === null ? '#' : $value['link'];
                 $btn .='
                     <button type="button" class="btn btn-primary" data-mdb-toggle="modal"
                         data-mdb-target="#linkModal-'.$value['detail_movie_id'].'-'.$getIndex.'">
-                        Show Link '.$getIndex.'
+                        Show Video '.$getIndex.'
                     </button>
                     <div class="modal fade" id="linkModal-'.$value['detail_movie_id'].'-'.$getIndex.'" tabindex="-1"
                         aria-labelledby="titlemodal-'.$value['detail_movie_id'].'-'.$getIndex.'" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered" style="max-width: 100%;width: auto !important;display: table;">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="titlemodal-'.$value['detail_movie_id'].'-'.$getIndex.'">Link '.$getIndex.'</h5>
+                                    <h5 class="modal-title" id="titlemodal-'.$value['detail_movie_id'].'-'.$getIndex.'">Video '.$getIndex.'</h5>
                                     <button type="button" class="btn-close" data-mdb-dismiss="modal"
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body" id="modalbody-'.$value['detail_movie_id'].'-'.$getIndex.'">
-                                    '.$value['link'].'
+                                    '.$value['embed'].'
+                                    <br>
+                                    <a class="btn btn-primary" href="'.$valueLink.'" target="_blank" role="button">Link Download</a>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
@@ -104,9 +108,9 @@ class DetailMovieRepository{
         ->addColumn('action', function($row){
             $btn = '
             <td>
-                <a onClick="routeEditDetail('.$row['id'].')"
+                <a id="editBtn_'.$row['id'].'" onClick="routeEditDetail('.$row['id'].')"
                     class="btn btn-primary">Edit</a>
-                <a onClick="routeDeleteDetail('.$row['id'].')"
+                <a id="deleteBtn_'.$row['id'].'" onClick="routeDeleteDetail('.$row['id'].')"
                     class="btn btn-danger">Delete</a>
             </td>
             ';
@@ -118,50 +122,59 @@ class DetailMovieRepository{
 
     public function save($request)
     {
+        DB::beginTransaction();
         $newDate = date("Y-m-d H:i:s");
         $validatedData = $request->validate([
-            'movieId' => 'required',
+            'movie_id' => 'required',
             'episode' => 'required'
         ]);
-        $data = $request->all();
-        if($data['lnkId']){
-            $getDetailMovie = detail_movie::find($data['lnkId']);
-            $getDetailMovie->update([
-                'episode' => $request->input('episode'),
-                'updated_at' => $newDate
-            ]);
-            DB::table('link_movie')->where('detail_movie_id',$data['lnkId'])->delete();
-            $newArray = [];
-            foreach ($data as $key => $value) {
-                if(str_starts_with($key,"link")){
-                    array_push($newArray,[
-                        'detail_movie_id' => $data['lnkId'],
-                        'link' => $value,
-                        'created_at' => $newDate,
+        try {
+            $data = $request->all();
+            if($data['link_id']){
+                $getDetailMovie = detail_movie::find($data['link_id']);
+                if($getDetailMovie){
+                    $getDetailMovie->update([
+                        'episode' => $request->input('episode'),
                         'updated_at' => $newDate
                     ]);
+                    DB::table('link_movie')->where('detail_movie_id',$data['link_id'])->delete();
+                    $newArray = [];
+                    foreach ($data['total_link'] as $key => $value) {
+                        array_push($newArray,[
+                            'detail_movie_id' => $data['link_id'],
+                            'embed' => $value['embed'],
+                            'link' => $value['link'],
+                            'created_at' => $newDate,
+                        ]);
+                    }
+                    link_movie::insert($newArray);
+                    DB::commit();
+                    return response()->json(['title'=>'Success', 'text'=>'Success update detail movie data!'], 200);
+                } else {
+                    return response()->json(['title'=>'Failed', 'text'=>'Failed to update detail movie data!'], 400);
                 }
-            }
-            link_movie::insert($newArray);
-            return response()->json(['title'=>'Success', 'text'=>'Success update detail movie data!'], 200);
-        } else {
-            $newId = detail_movie::create([
-                'movie_id' => $request->input('movieId'),
-                'episode' => $request->input('episode'),
-                'created_at' => $newDate
-            ]);
-            $newArray = [];
-            foreach ($data as $key => $value) {
-                if(str_starts_with($key,"link")){
+            } else {
+                $newId = detail_movie::create([
+                    'movie_id' => $request->input('movie_id'),
+                    'episode' => $request->input('episode'),
+                    'created_at' => $newDate
+                ]);
+                $newArray = [];
+                foreach ($data['total_link'] as $key => $value) {
                     array_push($newArray,[
                         'detail_movie_id' => $newId->id,
-                        'link' => $value,
+                        'embed' => $value['embed'],
+                        'link' => $value['link'],
                         'created_at' => $newDate,
                     ]);
                 }
+                link_movie::insert($newArray);
+                DB::commit();
+                return response()->json(['title'=>'Success', 'text'=>'Success insert detail movie data!'], 201);
             }
-            link_movie::insert($newArray);
-            return response()->json(['title'=>'Success', 'text'=>'Success insert detail movie data!'], 201);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response(['title'=>'FAILURE', 'text' => $th], 500);
         }
     }
 

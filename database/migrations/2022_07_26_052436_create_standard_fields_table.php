@@ -13,16 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('detail_movie', function (Blueprint $table) {
+        Schema::create('standard_field', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('movie_id');
-            $table->foreign('movie_id')
-            ->references('id')->on('movie')
-            ->onDelete('cascade');
-            $table->integer('episode');
-            $table->integer('view')->nullable()->default(0);
-            $table->integer('like')->nullable()->default(0);
-            $table->integer('dislike')->nullable()->default(0);
+            $table->string('name',255);
+            $table->boolean('is_status')->nullable()->default(false);
             $table->integer('created_by')->nullable()->default(0);
             $table->integer('updated_by')->nullable()->default(0);
             $table->timestamps();
@@ -36,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('detail_movie');
+        Schema::dropIfExists('standard_field');
     }
 };

@@ -13,13 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('standard_field', function (Blueprint $table) {
+        Schema::create('standard_field_detail', function (Blueprint $table) {
             $table->id();
             $table->string('name',255);
             $table->boolean('is_status')->nullable()->default(false);
-            $table->integer('group')->nullable()->default(null);
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent();
+            $table->unsignedBigInteger('group');
+            $table->foreign('group')->references('id')->on('standard_field')
+            ->onDelete('cascade');
+            $table->integer('created_by')->nullable()->default(0);
+            $table->integer('updated_by')->nullable()->default(0);
+            $table->timestamps();
         });
     }
 
@@ -30,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('standard_field');
+        Schema::dropIfExists('standard_field_detail');
     }
 };

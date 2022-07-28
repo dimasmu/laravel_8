@@ -14,7 +14,7 @@
                 <div class="card-header" style="background-color: white;">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-4" role="group" aria-label="Add">
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" id="add-btn"
-                            data-bs-target="#add_modal"><i class="fa-solid fa-plus me-2"></i>
+                            ><i class="fa-solid fa-plus me-2"></i>
                             Add data
                         </button>
                         <a class="btn btn-warning" onclick="location.href = '{{ url('/movie') }}';"><i
@@ -62,15 +62,23 @@
                                         <input type="text" name="episode" class="form-control" id="id_episode"
                                             value="{!! !empty($data->episode) ? $data->episode : null !!}">
                                     </div>
-                                    <div class="row col-md-12 col-xs-12 col-sm-12 link_input_field">
+                                    <div class="row link_input_field">
                                         <div class="col-md-10 col-xs-10 col-sm-10">
-                                            <label for="title" class="form-label">Link 1</label>
-                                            <input type="text" name="link" class="form-control" id="link_1"
-                                                value="">
+                                            <div class="col-md-12 col-xs-12 col-sm-12">
+                                                <label for="embed_1" class="form-label">Embed 1</label>
+                                                <input type="text" name="embed" class="form-control" id="embed_1"
+                                                    value="">
+                                            </div>
+                                             <div class="col-md-12 col-xs-12 col-sm-12">
+                                                <label for="link" class="form-label">link 1</label>
+                                                <input type="text" name="link" class="form-control" id="link_1"
+                                                    value="">
+                                            </div>
                                         </div>
                                         <div class="col-md-2 col-xs-2 col-sm-2">
-                                            <button type="button" id="add_link_btn" class="btn btn-primary btn-floating"
-                                                style="margin-top: 2.07rem"><i class="fa-solid fa-plus"></i></button>
+                                            <div class="col-md-2 col-xs-2 col-sm-2" style="margin-top: 65px;">
+                                                <button type="button" id="add_link_btn" class="btn btn-primary btn-floating"><i class="fa-solid fa-plus"></i></button>
+                                            </div>
                                         </div>
                                     </div>
                                 </form>
@@ -158,15 +166,24 @@
         $("#add_link_btn").click(function (){
             const getCount = $(`#inner_modal .link_input_field_clone`).length + 2;
             $("#inner_modal").append(`
-                <div class="row col-md-12 col-xs-12 col-sm-12 link_input_field_clone">
+                <div class="row link_input_field_clone">
                     <div class="col-md-10 col-xs-10 col-sm-10">
-                        <label for="title" class="form-label">Link ${getCount}</label>
-                        <input type="text" name="link_${getCount}" class="form-control"
-                            value="">
+                        <div class="col-md-12 col-xs-12 col-sm-12">
+                            <label for="title" class="form-label">Embed ${getCount}</label>
+                            <input type="text" name="embed_${getCount}" id="embed_${getCount}" class="form-control"
+                                value="">
+                        </div>
+                        <div class="col-md-12 col-xs-12 col-sm-12">
+                            <label for="link_${getCount}" class="form-label">link ${getCount}</label>
+                            <input type="text" name="link${getCount}" class="form-control" id="link_${getCount}"
+                                value="">
+                        </div>
                     </div>
                     <div class="col-md-2 col-xs-2 col-sm-2">
-                        <button type="button" class="btn btn-danger btn-floating delete_link_btn"
-                            style="margin-top: 2.07rem"><i class="fa-solid fa-minus"></i></button>
+                        <div class="col-md-2 col-xs-2 col-sm-2" style="margin-top:35px;">
+                            <button type="button" class="btn btn-danger btn-floating delete_link_btn"
+                                style="margin-top: 2.07rem"><i class="fa-solid fa-minus"></i></button>
+                        </div>
                     </div>
                 </div>
             `)
@@ -177,10 +194,12 @@
         })
 
         $('#add-btn').click(function() {
-            console.log("add modal");
+            $('#add_modal').modal('show');
             $('#id_episode').val('');
+            $('#embed_1').val('');
             $('#link_1').val('');
             $('#link_id').val('');
+            $(this).parent().parent().find('.link_input_field_clone').remove()
         })
 
         $('#dissmis-btn').click(function() {
@@ -204,17 +223,48 @@
                     let newData = [];
                     let getMovieId = null;
                     let date = new Date();
-                    dataSerialize.map((element,index) => {
-                        let getName = element.name;
-                        if(getName === 'movieId'){
-                            getMovieId = element.value
-                        }
-                    });
+                    let arrayPush = [];
+                    let object = {};
+                    let totalLink = {};
+                    arrayPush.push({
+                        "embed" : $("#embed_1").val(),
+                        "link" : $("#link_1").val()
+                    })
+                    let clone = $(".link_input_field_clone");
+                    for(var i = 0; i < clone.length; i++){
+                        var inputValues = $(clone[i]).find(':input').map(function(element,index) {
+                            var type = $(this).prop("type");
+
+                            // checked radios/checkboxes
+                            if ((type == "checkbox" || type == "radio") && this.checked) {
+                                return $(this).val();
+                            }
+                            // all other fields, except buttons
+                            else if (type != "button" && type != "submit") {
+
+                                if(element === 0){
+                                    object[`embed`] = $(this).val()
+                                }
+
+                                if(element === 1){
+                                    object[`link`] = $(this).val()
+                                }
+                            }
+                        })
+                        arrayPush.push(object);
+                    }
+                    totalLink = arrayPush;
+                    console.log("total link : ",totalLink);
                     $.ajax({
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        data: dataSerialize,
+                        data: {
+                            "movie_id" : $("#movie_id").val(),
+                            "link_id" : $("#link_id").val(),
+                            "episode" : $("#id_episode").val(),
+                            "total_link" : totalLink
+                        },
                         url: "{{ route('detail_movie.save') }}",
                         type: "POST",
                         dataType: 'json',
@@ -228,6 +278,8 @@
                             }).then( function () {
                                 const CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
                                 table.ajax.reload();
+                                $('#add_modal').modal('hide');
+                                $("#submit_button").parent().parent().find('.link_input_field_clone').remove();
                             })
                         },
                         error: function (data) {
@@ -242,6 +294,20 @@
                 }
             })
         })
+    });
+
+    $('.modal-content').resizable({
+      //alsoResize: ".modal-dialog",
+      minHeight: 300,
+      minWidth: 300
+    });
+    $('.modal-dialog').draggable();
+
+    $('#myModal').on('show.bs.modal', function() {
+      $(this).find('.modal-body').css({
+        'max-height': '100%',
+        'max-width': '100%'
+      });
     });
 
     function routeDeleteDetail(id){
@@ -289,6 +355,7 @@
     }
 
     function routeEditDetail(id){
+        $(("#editBtn_"+id).toString()).parents('.card-header').find('.link_input_field_clone').remove();
         let urlReplace = "{{ route('api.detail_id',[':id'])}}".replace(':id', id);
         $.ajax({
             headers: {
@@ -299,30 +366,40 @@
             type: "GET",
             dataType: 'json',
             success: function (data) {
-                console.log(data);
                 let link = data.get_link;
                 $("#add_modal").modal("show");
                 $("#link_id").val(id);
                 $("#id_episode").val(data.episode);
                 link.map((element,index) => {
                     if(index === 0){
-                        $("#link_1").val(element.link);
+                        $("#embed_1").val(element.embed === null ? '' : element.embed);
+                        $("#link_1").val(element.link === null ? '' : element.link);
                     }else {
                         const getCount = $(`#inner_modal .link_input_field_clone`).length + 2;
                         $("#inner_modal").append(`
-                            <div class="row col-md-12 col-xs-12 col-sm-12 link_input_field_clone">
+                            <div class="row link_input_field_clone">
                                 <div class="col-md-10 col-xs-10 col-sm-10">
-                                    <label for="title" class="form-label">Link ${getCount}</label>
-                                    <input type="text" name="link_${getCount}" class="form-control"
-                                        value="">
+                                    <div class="col-md-12 col-xs-12 col-sm-12">
+                                        <label for="title" class="form-label">Embed ${getCount}</label>
+                                        <input type="text" name="embed${getCount}" id="embed_${getCount}" class="form-control"
+                                            value="">
+                                    </div>
+                                    <div class="col-md-12 col-xs-12 col-sm-12">
+                                        <label for="link_${getCount}" class="form-label">link ${getCount}</label>
+                                        <input type="text" name="link${getCount}" class="form-control" id="link_${getCount}"
+                                            value="">
+                                    </div>
                                 </div>
                                 <div class="col-md-2 col-xs-2 col-sm-2">
-                                    <button type="button" class="btn btn-danger btn-floating delete_link_btn"
-                                        style="margin-top: 2.07rem"><i class="fa-solid fa-minus"></i></button>
+                                    <div class="col-md-2 col-xs-2 col-sm-2" style="margin-top: 35px;">
+                                        <button type="button" class="btn btn-danger btn-floating delete_link_btn"
+                                            style="margin-top: 2.07rem"><i class="fa-solid fa-minus"></i></button>
+                                    </div>
                                 </div>
                             </div>
                         `)
-                        $(`input[name='link_${getCount}']`).val(element.link);
+                        $(`input[name='embed${getCount}']`).val(element.embed === null ? '' : element.embed);
+                        $(`input[name='link${getCount}']`).val(element.link === null ? '' : element.link);
                     }
                 })
             },
