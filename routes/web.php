@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DetailMovieController;
+use App\Http\Controllers\LinkMovieController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MovieListController;
 /*
@@ -30,4 +31,12 @@ Route::prefix('/detail-movie')->group(function(){
     route::get('/{id}',[DetailMovieController::class, 'index'])->name('detail_movie.index');
     route::post('/',[DetailMovieController::class, 'insert'])->name('detail_movie.save');
     route::delete('/{id}',[DetailMovieController::class, 'delete'])->name('detail_movie.delete');
+});
+
+//MOVIE LINK ROUTE
+Route::prefix('/link')->group(function(){
+    route::get('/{id}',[LinkMovieController::class, 'index'])->name('link.index');
+    route::get('/open-link/{id}',[LinkMovieController::class, 'findOne'])->name('link.findOne');
+    route::post('/{id}',[LinkMovieController::class, 'save'])->name('link.save');
+    route::delete('/{id}',[LinkMovieController::class, 'delete'])->name('link.delete');
 });

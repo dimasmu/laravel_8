@@ -112,6 +112,9 @@ class DetailMovieRepository{
                     class="btn btn-primary">Edit</a>
                 <a id="deleteBtn_'.$row['id'].'" onClick="routeDeleteDetail('.$row['id'].')"
                     class="btn btn-danger">Delete</a>
+                <a id="linkBtn_'.$row['id'].'" onClick="routeLinkDetail('.$row['id'].','.$row['movie_id'].')"
+                    class="btn btn-info">Detail</a>
+
             </td>
             ';
             return $btn;
@@ -137,21 +140,21 @@ class DetailMovieRepository{
                         'episode' => $request->input('episode'),
                         'updated_at' => $newDate
                     ]);
-                    DB::table('link_movie')->where('detail_movie_id',$data['link_id'])->delete();
-                    $newArray = [];
-                    foreach ($data['total_link'] as $key => $value) {
-                        array_push($newArray,[
-                            'detail_movie_id' => $data['link_id'],
-                            'embed' => $value['embed'],
-                            'link' => $value['link'],
-                            'created_at' => $newDate,
-                        ]);
-                    }
-                    link_movie::insert($newArray);
+                    // DB::table('link_movie')->where('detail_movie_id',$data['link_id'])->delete();
+                    // $newArray = [];
+                    // foreach ($data['total_link'] as $key => $value) {
+                    //     array_push($newArray,[
+                    //         'detail_movie_id' => $data['link_id'],
+                    //         'embed' => $value['embed'],
+                    //         'link' => $value['link'],
+                    //         'created_at' => $newDate,
+                    //     ]);
+                    // }
+                    // link_movie::insert($newArray);
                     DB::commit();
                     return response()->json(['title'=>'Success', 'text'=>'Success update detail movie data!'], 200);
                 } else {
-                    return response()->json(['title'=>'Failed', 'text'=>'Failed to update detail movie data!'], 400);
+                    return response()->json(['title'=>'Failed', 'text'=>'Data not Found'], 400);
                 }
             } else {
                 $newId = detail_movie::create([
@@ -159,16 +162,16 @@ class DetailMovieRepository{
                     'episode' => $request->input('episode'),
                     'created_at' => $newDate
                 ]);
-                $newArray = [];
-                foreach ($data['total_link'] as $key => $value) {
-                    array_push($newArray,[
-                        'detail_movie_id' => $newId->id,
-                        'embed' => $value['embed'],
-                        'link' => $value['link'],
-                        'created_at' => $newDate,
-                    ]);
-                }
-                link_movie::insert($newArray);
+                // $newArray = [];
+                // foreach ($data['total_link'] as $key => $value) {
+                //     array_push($newArray,[
+                //         'detail_movie_id' => $newId->id,
+                //         'embed' => $value['embed'],
+                //         'link' => $value['link'],
+                //         'created_at' => $newDate,
+                //     ]);
+                // }
+                // link_movie::insert($newArray);
                 DB::commit();
                 return response()->json(['title'=>'Success', 'text'=>'Success insert detail movie data!'], 201);
             }

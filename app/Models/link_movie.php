@@ -11,4 +11,9 @@ class link_movie extends Model
 
     protected $guarded = ['id'];
     protected $table = 'link_movie';
+
+    public function resolution_join()
+    {
+        return $this->hasOne(Standard_field_detail::class,'id','resolution');
+    }
 }

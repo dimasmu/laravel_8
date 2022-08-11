@@ -9,6 +9,5 @@
 <link href="{{asset('css/light.css')}}" rel="stylesheet">
 <link href="{{asset('css/movie.css')}}" rel="stylesheet">
 <link href="{{asset('css/mdb.min.css')}}" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 <script src="{{asset('fontawesome/css/all.css')}}" crossorigin="anonymous"></script>
 {{-- <script src="{{asset('js/fontawesome.js')}}" crossorigin="anonymous"></script> --}}

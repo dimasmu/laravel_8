@@ -13,8 +13,8 @@
             <div class="card flex-fill w-100">
                 <div class="card-header" style="background-color: white;">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-4" role="group" aria-label="Add">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" id="add-btn"
-                            ><i class="fa-solid fa-plus me-2"></i>
+                        <button type="button" class="btn btn-primary" id="add-btn"><i
+                                class="fa-solid fa-plus me-2"></i>
                             Add data
                         </button>
                         <a class="btn btn-warning" onclick="location.href = '{{ url('/movie') }}';"><i
@@ -44,7 +44,7 @@
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="addModal">Add Link</h5>
+                                    <h5 class="modal-title" id="addModal">Add Episode</h5>
                                 </div>
                                 <form class="modal-body" id="inner_modal">
                                     <div class="mb-3 col-md-12 col-xs-12 col-sm-12 d-none">
@@ -54,22 +54,21 @@
                                     </div>
                                     <div class="mb-3 col-md-12 col-xs-12 col-sm-12 d-none">
                                         <label for="link_id" class="form-label">Link id</label>
-                                        <input type="text" name="lnkId" class="form-control" id="link_id"
-                                            value="">
+                                        <input type="text" name="lnkId" class="form-control" id="link_id" value="">
                                     </div>
                                     <div class="mb-3 col-md-12 col-xs-12 col-sm-12">
                                         <label for="episode" class="form-label">episode</label>
                                         <input type="text" name="episode" class="form-control" id="id_episode"
                                             value="{!! !empty($data->episode) ? $data->episode : null !!}">
                                     </div>
-                                    <div class="row link_input_field">
+                                    {{-- <div class="row link_input_field">
                                         <div class="col-md-10 col-xs-10 col-sm-10">
                                             <div class="col-md-12 col-xs-12 col-sm-12">
                                                 <label for="embed_1" class="form-label">Embed 1</label>
                                                 <input type="text" name="embed" class="form-control" id="embed_1"
                                                     value="">
                                             </div>
-                                             <div class="col-md-12 col-xs-12 col-sm-12">
+                                            <div class="col-md-12 col-xs-12 col-sm-12">
                                                 <label for="link" class="form-label">link 1</label>
                                                 <input type="text" name="link" class="form-control" id="link_1"
                                                     value="">
@@ -77,10 +76,12 @@
                                         </div>
                                         <div class="col-md-2 col-xs-2 col-sm-2">
                                             <div class="col-md-2 col-xs-2 col-sm-2" style="margin-top: 65px;">
-                                                <button type="button" id="add_link_btn" class="btn btn-primary btn-floating"><i class="fa-solid fa-plus"></i></button>
+                                                <button type="button" id="add_link_btn"
+                                                    class="btn btn-primary btn-floating"><i
+                                                        class="fa-solid fa-plus"></i></button>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </form>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" id="dissmis-btn"
@@ -296,20 +297,6 @@
         })
     });
 
-    $('.modal-content').resizable({
-      //alsoResize: ".modal-dialog",
-      minHeight: 300,
-      minWidth: 300
-    });
-    $('.modal-dialog').draggable();
-
-    $('#myModal').on('show.bs.modal', function() {
-      $(this).find('.modal-body').css({
-        'max-height': '100%',
-        'max-width': '100%'
-      });
-    });
-
     function routeDeleteDetail(id){
         swal({
             title: 'Are you sure to delete?',
@@ -370,38 +357,38 @@
                 $("#add_modal").modal("show");
                 $("#link_id").val(id);
                 $("#id_episode").val(data.episode);
-                link.map((element,index) => {
-                    if(index === 0){
-                        $("#embed_1").val(element.embed === null ? '' : element.embed);
-                        $("#link_1").val(element.link === null ? '' : element.link);
-                    }else {
-                        const getCount = $(`#inner_modal .link_input_field_clone`).length + 2;
-                        $("#inner_modal").append(`
-                            <div class="row link_input_field_clone">
-                                <div class="col-md-10 col-xs-10 col-sm-10">
-                                    <div class="col-md-12 col-xs-12 col-sm-12">
-                                        <label for="title" class="form-label">Embed ${getCount}</label>
-                                        <input type="text" name="embed${getCount}" id="embed_${getCount}" class="form-control"
-                                            value="">
-                                    </div>
-                                    <div class="col-md-12 col-xs-12 col-sm-12">
-                                        <label for="link_${getCount}" class="form-label">link ${getCount}</label>
-                                        <input type="text" name="link${getCount}" class="form-control" id="link_${getCount}"
-                                            value="">
-                                    </div>
-                                </div>
-                                <div class="col-md-2 col-xs-2 col-sm-2">
-                                    <div class="col-md-2 col-xs-2 col-sm-2" style="margin-top: 35px;">
-                                        <button type="button" class="btn btn-danger btn-floating delete_link_btn"
-                                            style="margin-top: 2.07rem"><i class="fa-solid fa-minus"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        `)
-                        $(`input[name='embed${getCount}']`).val(element.embed === null ? '' : element.embed);
-                        $(`input[name='link${getCount}']`).val(element.link === null ? '' : element.link);
-                    }
-                })
+                // link.map((element,index) => {
+                //     if(index === 0){
+                //         $("#embed_1").val(element.embed === null ? '' : element.embed);
+                //         $("#link_1").val(element.link === null ? '' : element.link);
+                //     }else {
+                //         const getCount = $(`#inner_modal .link_input_field_clone`).length + 2;
+                //         $("#inner_modal").append(`
+                //             <div class="row link_input_field_clone">
+                //                 <div class="col-md-10 col-xs-10 col-sm-10">
+                //                     <div class="col-md-12 col-xs-12 col-sm-12">
+                //                         <label for="title" class="form-label">Embed ${getCount}</label>
+                //                         <input type="text" name="embed${getCount}" id="embed_${getCount}" class="form-control"
+                //                             value="">
+                //                     </div>
+                //                     <div class="col-md-12 col-xs-12 col-sm-12">
+                //                         <label for="link_${getCount}" class="form-label">link ${getCount}</label>
+                //                         <input type="text" name="link${getCount}" class="form-control" id="link_${getCount}"
+                //                             value="">
+                //                     </div>
+                //                 </div>
+                //                 <div class="col-md-2 col-xs-2 col-sm-2">
+                //                     <div class="col-md-2 col-xs-2 col-sm-2" style="margin-top: 35px;">
+                //                         <button type="button" class="btn btn-danger btn-floating delete_link_btn"
+                //                             style="margin-top: 2.07rem"><i class="fa-solid fa-minus"></i></button>
+                //                     </div>
+                //                 </div>
+                //             </div>
+                //         `)
+                //         $(`input[name='embed${getCount}']`).val(element.embed === null ? '' : element.embed);
+                //         $(`input[name='link${getCount}']`).val(element.link === null ? '' : element.link);
+                //     }
+                // })
             },
             error: function (data) {
                 swal({
@@ -410,6 +397,22 @@
                     icon: "error"
                 });
                 console.log('Error:', data);
+            }
+        });
+    }
+
+    function routeLinkDetail(id,movie_id){
+        const CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+        $.ajax({
+            type: "get",
+            url: "/link/"+id,
+            data: {
+                "movie_id" : movie_id,
+                "CSRF_TOKEN" : CSRF_TOKEN
+            },
+            success: function (response) {
+                $(".content").html(response);
+                // window.history.replaceState(null, null, "/link/"+id);
             }
         });
     }
