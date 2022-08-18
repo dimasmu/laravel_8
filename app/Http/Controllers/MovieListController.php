@@ -17,7 +17,8 @@ class MovieListController extends Controller
         foreach ($data as $key => $value) {
             $value->category = json_decode($value->category);
         }
-        return view('movie.list',compact('data'));
+        $active = 2;
+        return view('movie.list',compact('data','active'));
     }
 
     public function openMovie(){

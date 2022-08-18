@@ -85,6 +85,7 @@
 <script src="{{asset('js/jquery.dataTables.min.js')}}"></script>
 <script src="{{asset('js/dataTables.bootstrap5.min.js')}}"></script>
 <script src="{{asset('js/select2.min.js')}}"></script>
+<script src="{{asset('js/sweetalert.min.js')}}"></script>
 <script type="text/javascript">
     var tableLink = null;
     $(document).ready(function () {

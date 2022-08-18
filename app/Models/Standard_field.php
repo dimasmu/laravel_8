@@ -17,6 +17,8 @@ class Standard_field extends Model
      * @var string
      */
     protected $table = 'standard_field';
+    public $timestamps = false;
+    protected $guarded = [];
     public function group(){
         return $this->hasMany(Standard_field_detail::class, 'group', 'id');
     }

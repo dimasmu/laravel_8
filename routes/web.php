@@ -2,8 +2,11 @@
 
 use App\Http\Controllers\DetailMovieController;
 use App\Http\Controllers\LinkMovieController;
+use App\Http\Controllers\SystemController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MovieListController;
+use App\Http\Controllers\StandardField;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -39,4 +42,11 @@ Route::prefix('/link')->group(function(){
     route::get('/open-link/{id}',[LinkMovieController::class, 'findOne'])->name('link.findOne');
     route::post('/{id}',[LinkMovieController::class, 'save'])->name('link.save');
     route::delete('/{id}',[LinkMovieController::class, 'delete'])->name('link.delete');
+});
+
+//SYSTEM
+Route::prefix('/system')->group(function(){
+    route::get('/standard-field',[StandardField::class, 'findAll'])->name('system.index');
+    route::post('/standard-field',[StandardField::class, 'saveStandardField'])->name('system.standard_field.save');
+    route::delete('/standard-field/{id}',[StandardField::class, 'deleteStandardField'])->name('system.standard_field.delete');
 });

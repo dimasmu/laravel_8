@@ -16,10 +16,17 @@
 
                 <ul class="sidebar-nav">
                     <li class="sidebar-header">
+                        System
+                    </li>
+                    <li class="sidebar-item {{Request::is('system/standard-field') ? 'active' : ''}}">
+                        <a class="sidebar-link" href="{{ route('system.index')}}">
+                            <i class="fa-solid fa-gear"></i> <span class="align-middle">Standard field</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-header">
                         Movie Section
                     </li>
-
-                    <li class="sidebar-item active">
+                    <li class="sidebar-item {{Request::is('movie') ? 'active' : ''}}">
                         <a class="sidebar-link" href="{{ route('movie')}}">
                             <i class="fa-solid fa-clapperboard"></i> <span class="align-middle">Movie</span>
                         </a>
@@ -71,7 +78,8 @@
                     <div class="row text-muted">
                         <div class="col-6 text-start">
                             <p class="mb-0">
-                                <a class="text-muted" href="#" target="_blank"><strong>Database Anime</strong></a> &copy;
+                                <a class="text-muted" href="#" target="_blank"><strong>Database Anime</strong></a>
+                                &copy;
                             </p>
                         </div>
                     </div>

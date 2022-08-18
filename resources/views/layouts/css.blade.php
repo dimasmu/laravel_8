@@ -5,9 +5,9 @@
 <meta name="author" content="AdminKit">
 <meta name="keywords"
     content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
+<script src="{{asset('js/fontawesome.js')}}" crossorigin="anonymous"></script>
 <link href="{{asset('css/app.css')}}" rel="stylesheet">
-<link href="{{asset('css/light.css')}}" rel="stylesheet">
+{{--
+<link href="{{asset('fontawesome/css/all.css')}}" rel="stylesheet"> --}}
 <link href="{{asset('css/movie.css')}}" rel="stylesheet">
 <link href="{{asset('css/mdb.min.css')}}" rel="stylesheet">
-<script src="{{asset('fontawesome/css/all.css')}}" crossorigin="anonymous"></script>
-{{-- <script src="{{asset('js/fontawesome.js')}}" crossorigin="anonymous"></script> --}}

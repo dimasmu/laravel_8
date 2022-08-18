@@ -22,7 +22,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // API STANDARD FIELD
+Route::get('/standard-field',[StandardField::class, 'findAllYajra'])->name('api.standard_field.all');
 Route::get('/standard-field/{id}',[StandardField::class, 'findOne'])->name('api.standard_field');
+Route::get('/standard-field-edit/{id}',[StandardField::class, 'findOneEdit'])->name('api.standard_field_edit');
 Route::get('/standard-field-ajax/{id}',[StandardField::class, 'findOneAjax'])->name('api.standard_field_ajax');
 Route::get('/standard-field-detail-ajax/{id}',[StandardField::class, 'findOneResolution'])->name('api.standard_field_detail_ajax');
 

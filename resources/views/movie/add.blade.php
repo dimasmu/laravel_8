@@ -95,6 +95,7 @@
 </div>
 <script src="{{asset('js/select2.min.js')}}"></script>
 <script src="{{asset('js/moment.js')}}"></script>
+<script src="{{asset('js/sweetalert.min.js')}}"></script>
 <script>
     $(document).ready(function() {
         let releaseDate = {!! isset($data->release) ? json_encode($data->release) : 'false' !!};
