@@ -32,7 +32,7 @@
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
-                            <tbody class="table-group-divider d-none">
+                            <tbody class="table-group-divider">
                                 {{-- @foreach($data as $index => $row)
                                 <tr>
                                     <th scope="row">{{$index+1}}</th>
@@ -60,7 +60,7 @@
                                 @endforeach --}}
                             </tbody>
                         </table>
-                        @include('layouts.loading')
+                        {{-- @include('layouts.loading') --}}
                     </div>
                     <!-- Modal -->
                     <div class="modal fade" id="add_modal" tabindex="-1" aria-labelledby="addModal" aria-hidden="true">
@@ -171,8 +171,8 @@
                 }
             ],
         });
-        $('#loading').hide();
-        $('#system tbody').removeClass('d-none');
+        // $('#loading').hide();
+        // $('#system tbody').removeClass('d-none');
 
         $("#submit_button").click(function() {
             swal({
